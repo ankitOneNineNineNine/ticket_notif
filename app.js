@@ -18,9 +18,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // 
-app.get('/', ()=>{
-  console.log('working')
+app.get('/', (req, res) => {
+  console.log('here')
+  res.sendFile(path.join(__dirname, '/public/index.html'))
 })
+
+let sent = false;
 // document.querySelector('.show-time-wrap')
 
 function check() {
@@ -28,7 +31,7 @@ function check() {
     if (!error & response.statusCode == 200) {
       const $ = cheerio.load(html)
       const datarow = $(".show-time-wrap");
-      if (datarow['0']) {
+      if (datarow['0'] && !sent) {
 
 
         client.messages
@@ -37,13 +40,13 @@ function check() {
             from: '+13252405920',
             to: '+9779860678182'
           })
-          .then(message =>{});
+          .then(message => { sent = true; });
       }
     }
   })
 }
 
-cron.schedule('* * * * *', ()=>{
+cron.schedule('* * * * *', () => {
   check()
   // console.log('Running')
 })
@@ -60,11 +63,12 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).send(err);
+
 });
 
 
-app.listen(process.env.PORT, '0.0.0.0', ()=>{
+app.listen(process.env.PORT, '0.0.0.0', (err) => {
+
   console.log('Connected to PORT')
 })
