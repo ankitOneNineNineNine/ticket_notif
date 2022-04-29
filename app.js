@@ -18,7 +18,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // 
-
+app.get('/', ()=>{
+  console.log('working')
+})
 // document.querySelector('.show-time-wrap')
 
 function check() {
