@@ -41,7 +41,7 @@ function check() {
   })
 }
 
-cron.schedule('*/30 * * * *', ()=>{
+cron.schedule('* * * * *', ()=>{
   check()
   // console.log('Running')
 })
